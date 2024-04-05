@@ -16,8 +16,11 @@ function Gameboard() {
             value = player
         }
         const getValue = () => value;
+        const resetValue = () => {
+            value = 0
+        }
 
-        return {addToken, getValue}
+        return {addToken, getValue, resetValue}
     } 
 
     const placeToken = (player, row, column) => {
@@ -34,7 +37,36 @@ function Gameboard() {
         console.log(currentBoard)
     }
 
-    return {printBoard, placeToken}
+    const resetBoard = () => {
+        const resetBoard = board.map((row) => row.map((cell) => cell.resetValue()));
+        printBoard()
+    }
+
+    return {printBoard, placeToken, resetBoard}
 }
 
+function Players(playerOne = "player one", playerTwo = "player two") {
+    const players = [
+        {
+            name: playerOne,
+            token: 1,
+        },
+        {
+            name: playerTwo,
+            token: 2,
+        }
+    ]
+
+    let activePlayer = players[0];
+
+    const getActivePlayer = () => activePlayer
+
+    const switchActivePlayer = () => {
+        activePlayer = activePlayer === players[0] ? players[1] : players[0];
+    }
+    
+    return {getActivePlayer, switchActivePlayer}
+}
+
+game = Players("bob", "tim")
 board = Gameboard()
