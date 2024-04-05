@@ -25,12 +25,13 @@ function Gameboard() {
 
     const placeToken = (player, row, column) => {
         if (board[row][column].getValue() === 0) {
-            board[row][column].addToken(player)
+            board[row][column].addToken(player);
         } else {
-            console.log("Can't go here")
+            console.log("Invalid.")
         }
-        printBoard()
     }
+
+    const getBoard = () => board
 
     const printBoard = () => {
         const currentBoard = board.map((row) => row.map((cell) => cell.getValue()))
@@ -42,7 +43,7 @@ function Gameboard() {
         printBoard()
     }
 
-    return {printBoard, placeToken, resetBoard}
+    return {printBoard, placeToken, resetBoard, getBoard}
 }
 
 function Players(playerOne = "player one", playerTwo = "player two") {
@@ -68,5 +69,23 @@ function Players(playerOne = "player one", playerTwo = "player two") {
     return {getActivePlayer, switchActivePlayer}
 }
 
-game = Players("bob", "tim")
-board = Gameboard()
+function Gameplay(player1, player2) {
+    const board = Gameboard();
+    const players = Players(player1, player2)
+    
+    const playTurn = (row, column) => {
+        console.log(`${players.getActivePlayer().name}'s move was`);
+        board.placeToken(players.getActivePlayer().token, row, column);
+         if (board.getBoard()[row][column].getValue() === players.getActivePlayer().token) {
+              players.switchActivePlayer();
+          } else {
+              console.log("Go again");
+            }
+        board.printBoard()
+        console.log(`It is now ${players.getActivePlayer().name}'s turn`);
+    }
+    board.printBoard()
+    return {playTurn}
+}
+
+game = Gameplay("luke", "allison")
