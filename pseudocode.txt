@@ -1,0 +1,26 @@
+Gameboard object 
+    -house the gameboard as an array.
+        -loop to generate a 3x3 board and populate with cells
+    -function to create cells
+        -cells will have a value 
+        -function to update its value when token placed
+        -function to return cells value
+    -function to return the board (will use for UI)
+    -function to place a players token 
+    -function to print updated board after token placement (for use in console)
+    -function to reset all values back to 0
+
+Players object
+    -array to house both Players
+        -players will be objects
+            -players will have a name, and a token
+    -function to set currentplayer
+    -function to return who the currentplayer is
+    -function to switch currentplayer
+
+Gameplay object
+    -create a Gameboard
+    -create players
+    -function to play turn and then print new board and switch player
+    -function to check for winner
+    
