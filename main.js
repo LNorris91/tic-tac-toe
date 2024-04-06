@@ -65,8 +65,12 @@ function Players(playerOne = "player one", playerTwo = "player two") {
     const switchActivePlayer = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
     }
+    const resetActivePlayer = () => {
+        activePlayer = players[0];
+    }
     
-    return {getActivePlayer, switchActivePlayer}
+    
+    return {getActivePlayer, switchActivePlayer, resetActivePlayer}
 }
 
 function Gameplay(player1, player2) {
@@ -74,14 +78,22 @@ function Gameplay(player1, player2) {
     const players = Players(player1, player2)
     
     const playTurn = (row, column) => {
+
         board.placeToken(players.getActivePlayer().token, row, column);
-        checkWin()
         console.log(`${players.getActivePlayer().name}'s move was`);
-         if (board.getBoard()[row][column].getValue() === players.getActivePlayer().token) {
-              players.switchActivePlayer();
-          } else {
-              console.log("Invalid, go again");
-            }
+
+        if (checkWin()) {
+            console.log(`${players.getActivePlayer().name} WINS!!!!`);
+        } else if (checkTie()){
+            console.log("It's a Tie")
+        } else {
+            if (board.getBoard()[row][column].getValue() === players.getActivePlayer().token) {
+                players.switchActivePlayer();
+            } else {
+                console.log("Invalid, go again");
+                }
+        }
+
         board.printBoard()
         console.log(`It is ${players.getActivePlayer().name}'s turn`);
     }
@@ -89,7 +101,6 @@ function Gameplay(player1, player2) {
     const checkWin = () => {
         const arr = board.getBoard().map((row) => row.map((cell) => cell.getValue()));
         let activeToken = players.getActivePlayer().token;
-        console.log(activeToken)
         
         if (arr[0][0] === activeToken && arr[0][1] === activeToken && arr[0][2] === activeToken || //check for horizontal wins
             arr[1][0] === activeToken && arr[1][1] === activeToken && arr[1][2] === activeToken || 
@@ -99,14 +110,31 @@ function Gameplay(player1, player2) {
             arr[0][1] === activeToken && arr[1][1] === activeToken && arr[2][1] === activeToken || 
             arr[0][2] === activeToken && arr[1][2] === activeToken && arr[2][2] === activeToken || 
 
-            arr[0][0] === activeToken && arr[1][1] === activeToken && arr[2][2] === activeToken || //check for diaganol wins
+            arr[0][0] === activeToken && arr[1][1] === activeToken && arr[2][2] === activeToken || //check for diagonal wins
             arr[2][0] === activeToken && arr[1][1] === activeToken && arr[0][2] === activeToken) {
-                console.log(`${players.getActivePlayer().name} WINS!!!!`)
+                return true
+            } else {
+                return false
             }
+    }
+
+    const checkTie = () => {
+        const arr = board.getBoard().map((row) => row.map((cell) => cell.getValue()));
+        if (arr[0].includes(0) || arr[1].includes(0) || arr[2].includes(0)) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    const reset = () => {
+        board.resetBoard();
+        players.resetActivePlayer();
+        console.log(`It is ${players.getActivePlayer().name}'s turn`);
     }
     
     board.printBoard()
-    return {playTurn}
+    return {playTurn, reset}
 }
 
 game = Gameplay("luke", "allison")
