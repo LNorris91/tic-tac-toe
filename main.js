@@ -1,3 +1,7 @@
+const begin = document.querySelector(".start");
+const dialog = document.querySelector("dialog");
+begin.addEventListener('click', start)
+
 function Gameboard() {
     const rows = 3;
     const columns = 3;
@@ -19,8 +23,9 @@ function Gameboard() {
         const resetValue = () => {
             value = 0
         }
-
-        return {addToken, getValue, resetValue}
+        return {addToken, 
+                getValue, 
+                resetValue}
     } 
 
     const placeToken = (player, row, column) => {
@@ -33,17 +38,13 @@ function Gameboard() {
 
     const getBoard = () => board
 
-    const printBoard = () => {
-        const currentBoard = board.map((row) => row.map((cell) => cell.getValue()))
-        console.log(currentBoard)
-    }
-
     const resetBoard = () => {
-        const resetBoard = board.map((row) => row.map((cell) => cell.resetValue()));
-        printBoard()
+        board.map((row) => row.map((cell) => cell.resetValue()));
     }
 
-    return {printBoard, placeToken, resetBoard, getBoard}
+    return {placeToken, 
+            resetBoard, 
+            getBoard}
 }
 
 function Players(playerOne = "player one", playerTwo = "player two") {
@@ -74,10 +75,10 @@ function Players(playerOne = "player one", playerTwo = "player two") {
     const getPlayer2 = () => players[1];
     
     return {getActivePlayer, 
-        switchActivePlayer, 
-        resetActivePlayer, 
-        getPlayer1, 
-        getPlayer2}
+            switchActivePlayer, 
+            resetActivePlayer, 
+            getPlayer1, 
+            getPlayer2}
 }
 
 function Gameplay(player1, player2) {
@@ -87,23 +88,19 @@ function Gameplay(player1, player2) {
     const playTurn = (row, column) => {
 
         board.placeToken(players.getActivePlayer().token, row, column);
-        console.log(`${players.getActivePlayer().name}'s move was`);
 
         if (checkWin()) {
-            console.log(`${players.getActivePlayer().name} WINS!!!!`);
             players.getActivePlayer().score++;
+            return 'win'
         } else if (checkTie()){
-            console.log("It's a Tie")
+            return 'tie'
         } else {
             if (board.getBoard()[row][column].getValue() === players.getActivePlayer().token) {
                 players.switchActivePlayer();
             } else {
-                console.log("Invalid, go again");
+                return
                 }
         }
-
-        board.printBoard()
-        console.log(`It is ${players.getActivePlayer().name}'s turn`);
     }
 
     const checkWin = () => {
@@ -138,10 +135,8 @@ function Gameplay(player1, player2) {
     const reset = () => { 
         board.resetBoard();
         players.resetActivePlayer();
-        console.log(`It is ${players.getActivePlayer().name}'s turn`);
     }
     
-    board.printBoard()
     return {playTurn, 
             reset, 
             getBoard: board.getBoard, 
@@ -152,9 +147,17 @@ function Gameplay(player1, player2) {
 
 function ScreenController(player1, player2){
     const game = Gameplay(player1, player2);
-    const playerTurnDiv = document.querySelector(".turn");
+    let playerTurnDiv = document.querySelector(".turn");
     const boardDiv = document.querySelector(".board");
-    const scoreDiv = document.querySelector(".score");
+    const p1Score = document.querySelector(".p1Score");
+    const p2Score = document.querySelector(".p2Score")
+    const container = document.querySelector(".container");
+    let announce = document.querySelector(".announce")
+
+    const resetBtn = document.createElement("button");
+          resetBtn.classList.add("resetBtn")
+          resetBtn.textContent = "Reset Board"
+          container.appendChild(resetBtn)
 
     const updateScreen = () => {
         boardDiv.textContent = "";
@@ -164,7 +167,8 @@ function ScreenController(player1, player2){
         const player2 = game.getPlayer2();
         
         playerTurnDiv.textContent = `${activePlayer.name}'s Turn`;
-        scoreDiv.textContent = `${player1.name}: ${player1.score} | ${player2.name}: ${player2.score}`
+        p1Score.textContent = `${player1.name}: ${player1.score}`
+        p2Score.textContent = `${player2.name}: ${player2.score}`
 
         board.forEach((row, rowNum) => {
           row.forEach((cell, colNum) => {
@@ -172,7 +176,16 @@ function ScreenController(player1, player2){
             cellButton.classList.add("cell");
             cellButton.dataset.row = rowNum;
             cellButton.dataset.col = colNum;
-            cellButton.textContent = cell.getValue()
+            switch (cell.getValue()) {
+                case 0:
+                    cellButton.textContent = "";
+                    break;
+                case 1:
+                    cellButton.textContent = "X";
+                    break;
+                case 2: 
+                    cellButton.textContent = "O";
+            }
             boardDiv.appendChild(cellButton);
         })})
     }
@@ -180,13 +193,39 @@ function ScreenController(player1, player2){
     function playerClick(e) {
         const selectedRow = e.target.dataset.row;
         const selectedCol = e.target.dataset.col;
-        game.playTurn(selectedRow, selectedCol)
+
+        switch (game.playTurn(selectedRow, selectedCol)) {
+            case 'win':
+                announce.textContent = `${game.getActivePlayer().name} WINS!!!!`
+                boardDiv.removeEventListener('click', playerClick);
+                break;
+            case 'tie':
+                announce.textContent = "It's a Tie!"
+                boardDiv.removeEventListener('click', playerClick);
+        }
         updateScreen()
     } 
 
+    function reset() {
+        game.reset();
+        updateScreen();
+        announce.textContent = "";
+        boardDiv.addEventListener('click', playerClick);
+    }
+
     boardDiv.addEventListener('click', playerClick);
+    resetBtn.addEventListener('click', reset)
 
     updateScreen()
 }
 
-game = ScreenController("Luke", "Allison")
+function start(e){
+    e.preventDefault();
+
+    const player1 = document.getElementById("player1").value;
+    const player2 = document.getElementById("player2").value;
+    if (!player1 || !player2) return
+
+    ScreenController(player1, player2)
+    dialog.close()
+}
