@@ -1,0 +1,22 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.board {
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+    width: 50vw;
+    aspect-ratio: 1/1;
+}

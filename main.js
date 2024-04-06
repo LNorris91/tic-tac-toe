@@ -51,10 +51,12 @@ function Players(playerOne = "player one", playerTwo = "player two") {
         {
             name: playerOne,
             token: 1,
+            score: 0,
         },
         {
             name: playerTwo,
             token: 2,
+            score: 0,
         }
     ]
 
@@ -68,9 +70,14 @@ function Players(playerOne = "player one", playerTwo = "player two") {
     const resetActivePlayer = () => {
         activePlayer = players[0];
     }
+    const getPlayer1 = () => players[0];
+    const getPlayer2 = () => players[1];
     
-    
-    return {getActivePlayer, switchActivePlayer, resetActivePlayer}
+    return {getActivePlayer, 
+        switchActivePlayer, 
+        resetActivePlayer, 
+        getPlayer1, 
+        getPlayer2}
 }
 
 function Gameplay(player1, player2) {
@@ -84,6 +91,7 @@ function Gameplay(player1, player2) {
 
         if (checkWin()) {
             console.log(`${players.getActivePlayer().name} WINS!!!!`);
+            players.getActivePlayer().score++;
         } else if (checkTie()){
             console.log("It's a Tie")
         } else {
@@ -118,7 +126,7 @@ function Gameplay(player1, player2) {
             }
     }
 
-    const checkTie = () => {
+    const checkTie = () => {  //if there is no winner and there are no "0"s left on the board
         const arr = board.getBoard().map((row) => row.map((cell) => cell.getValue()));
         if (arr[0].includes(0) || arr[1].includes(0) || arr[2].includes(0)) {
             return false
@@ -127,14 +135,58 @@ function Gameplay(player1, player2) {
         }
     }
 
-    const reset = () => {
+    const reset = () => { 
         board.resetBoard();
         players.resetActivePlayer();
         console.log(`It is ${players.getActivePlayer().name}'s turn`);
     }
     
     board.printBoard()
-    return {playTurn, reset}
+    return {playTurn, 
+            reset, 
+            getBoard: board.getBoard, 
+            getActivePlayer: players.getActivePlayer,
+            getPlayer1: players.getPlayer1, 
+            getPlayer2: players.getPlayer2}
 }
 
-game = Gameplay("luke", "allison")
+function ScreenController(player1, player2){
+    const game = Gameplay(player1, player2);
+    const playerTurnDiv = document.querySelector(".turn");
+    const boardDiv = document.querySelector(".board");
+    const scoreDiv = document.querySelector(".score");
+
+    const updateScreen = () => {
+        boardDiv.textContent = "";
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+        const player1 = game.getPlayer1();
+        const player2 = game.getPlayer2();
+        
+        playerTurnDiv.textContent = `${activePlayer.name}'s Turn`;
+        scoreDiv.textContent = `${player1.name}: ${player1.score} | ${player2.name}: ${player2.score}`
+
+        board.forEach((row, rowNum) => {
+          row.forEach((cell, colNum) => {
+            const cellButton = document.createElement("button");
+            cellButton.classList.add("cell");
+            cellButton.dataset.row = rowNum;
+            cellButton.dataset.col = colNum;
+            cellButton.textContent = cell.getValue()
+            boardDiv.appendChild(cellButton);
+        })})
+    }
+
+    function playerClick(e) {
+        const selectedRow = e.target.dataset.row;
+        const selectedCol = e.target.dataset.col;
+        game.playTurn(selectedRow, selectedCol)
+        updateScreen()
+    } 
+
+    boardDiv.addEventListener('click', playerClick);
+
+    updateScreen()
+}
+
+game = ScreenController("Luke", "Allison")
