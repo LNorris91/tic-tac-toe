@@ -6,11 +6,9 @@
 dialog {
     border: none;
     position: absolute;
-    left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(0%, -50%);
     text-align: center;
-
 }
 form {
     display: flex;
@@ -26,10 +24,6 @@ input {
 input:focus {
     outline: none;
 }
-input:-webkit-autofill,
-input:-webkit-autofill:focus {
-    transition: background-color 0s 600000s, color 0s 600000s !important;
-  }
 .start {
     margin-top: 10px;
     border: none;
@@ -107,5 +101,10 @@ body {
 @media (max-width: 600px) {
     .board {
         width: 75vw;
+    }
+}
+@media (min-width: 1000px) {
+    .board {
+        width: 35vw;
     }
 }
