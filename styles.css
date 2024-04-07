@@ -27,7 +27,7 @@ input:focus {
 .start {
     margin-top: 10px;
     border: none;
-    background-color: white;
+    background: none;
     cursor: pointer;
 }
 .start:hover {
@@ -67,7 +67,7 @@ body {
     margin: 30px;
 }
 .cell {
-    background-color: white;
+    background: none;
     border: none;
     font-size: 1.5rem;
 }
@@ -89,7 +89,7 @@ body {
 .resetBtn {
     margin-top: 10px;
     border: none;
-    background-color: white;
+    background: none;
     cursor: pointer;
     font-size: 0.8em;
 }

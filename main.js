@@ -155,6 +155,7 @@ function ScreenController(player1, player2){
     let announce = document.querySelector(".announce")
 
     const resetBtn = document.createElement("button");
+          resetBtn.setAttribute("type", "button")
           resetBtn.classList.add("resetBtn")
           resetBtn.textContent = "Reset Board"
           container.appendChild(resetBtn)
