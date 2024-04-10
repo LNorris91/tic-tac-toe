@@ -16,6 +16,7 @@ form {
     align-items: center;
     gap: 15px;
     font-size: 1rem;
+    -webkit-display: none;
 }
 input {
     border: none;
@@ -29,6 +30,7 @@ input:focus {
     border: none;
     background: none;
     cursor: pointer;
+    color: black!important;
 }
 .start:hover {
     transform: scale(1.1);
@@ -70,6 +72,7 @@ body {
     background: none;
     border: none;
     font-size: 1.5rem;
+    color: black!important;
 }
 .cell:hover {
     cursor: pointer;
@@ -92,6 +95,7 @@ body {
     background: none;
     cursor: pointer;
     font-size: 0.8em;
+    color: black!important;
 }
 .resetBtn:hover {
     transform: scale(1.1);
