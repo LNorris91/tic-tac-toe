@@ -16,11 +16,11 @@ form {
     align-items: center;
     gap: 15px;
     font-size: 1rem;
-    -webkit-display: none;
 }
 input {
     border: none;
     border-bottom: 1px solid black;
+    border-radius: 0px;
 }
 input:focus {
     outline: none;
