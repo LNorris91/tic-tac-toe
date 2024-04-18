@@ -86,6 +86,10 @@ function Gameplay(player1, player2) {
     const players = Players(player1, player2)
     
     const playTurn = (row, column) => {
+        
+        if (board.getBoard()[row][column].getValue() === 1 || board.getBoard()[row][column].getValue() === 2) {
+            return
+        }
 
         board.placeToken(players.getActivePlayer().token, row, column);
 
@@ -95,11 +99,7 @@ function Gameplay(player1, player2) {
         } else if (checkTie()){
             return 'tie'
         } else {
-            if (board.getBoard()[row][column].getValue() === players.getActivePlayer().token) {
-                players.switchActivePlayer();
-            } else {
-                return
-                }
+            players.switchActivePlayer();
         }
     }
 
